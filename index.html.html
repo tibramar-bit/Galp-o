@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bramarlog – Logística que chega no prazo</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F5F6;--surface:#FFFFFF;--ink:#0B2E3A;--muted:#4C6770;--line:#D5E0E3;--deep:#0B2E3A;--on-deep:#EAF3F5;--accent:#E8590C;--on-accent:#FFFFFF;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#081B22;--surface:#0F2A33;--ink:#E6F0F2;--muted:#9DB6BD;--line:#1E3F4A;--deep:#04141A;--on-deep:#EAF3F5;--accent:#FF7A33;--on-accent:#1A0B02;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#081B22;--surface:#0F2A33;--ink:#E6F0F2;--muted:#9DB6BD;--line:#1E3F4A;--deep:#04141A;--on-deep:#EAF3F5;--accent:#FF7A33;--on-accent:#1A0B02;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 "Archivo",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+h1,h2,h3{font-stretch:75%;font-weight:800;line-height:1.02;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(2.6rem,7.5vw,5.4rem)}
+h2{font-size:clamp(1.9rem,4.5vw,3rem);margin-bottom:.6rem}
+h3{font-size:1.35rem;font-stretch:90%;line-height:1.15;margin-bottom:.4rem}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.logo{font-stretch:75%;font-weight:800;font-size:1.6rem;text-decoration:none;display:flex;align-items:center;gap:8px}
+.logo i{width:14px;height:14px;background:var(--accent);display:inline-block;border-radius:2px}
+nav{display:flex;gap:22px;font-weight:600;font-size:.95rem}
+nav a{text-decoration:none;color:var(--muted)}nav a:hover{color:var(--ink)}
+.btn{display:inline-block;background:var(--accent);color:var(--on-accent);font:inherit;font-weight:700;border:0;border-radius:6px;padding:13px 22px;text-decoration:none;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.hero{padding:64px 0 72px;display:grid;gap:44px;grid-template-columns:1.1fr .9fr;align-items:center}
+.hero p.lead{font-size:1.2rem;color:var(--muted);max-width:34em;margin:22px 0 28px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.track{background:var(--deep);color:var(--on-deep);border-radius:10px;padding:26px}
+.track h2{font-size:1.5rem;margin:0 0 4px}
+.track small{color:#9DB6BD;display:block;margin-bottom:16px}
+.track form{display:flex;gap:8px}
+.track input{flex:1;min-width:0;font:inherit;padding:12px 14px;border-radius:6px;border:2px solid #2B5360;background:#0A2630;color:#EAF3F5}
+.track .btn{padding:12px 18px}
+.eg{background:none;border:0;color:#9DB6BD;font:inherit;font-size:.88rem;text-decoration:underline;cursor:pointer;padding:8px 0 0}
+#result{margin-top:18px;min-height:120px}
+.route{display:flex;justify-content:space-between;font-weight:700;font-stretch:80%;font-size:1.15rem;margin-bottom:10px}
+.bar{height:8px;background:#1E4552;border-radius:4px;overflow:hidden}
+.bar b{display:block;height:100%;background:var(--accent);width:0;transition:width .9s ease}
+.steps{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px;font-size:.95rem}
+.steps li{display:flex;gap:10px;color:#9DB6BD}
+.steps li::before{content:"";width:12px;height:12px;border:2px solid #4C7380;border-radius:50%;margin-top:5px;flex:none}
+.steps li.done{color:#EAF3F5}.steps li.done::before{background:var(--accent);border-color:var(--accent)}
+.err{color:#FFB48A}
+section{padding:72px 0}
+.alt{background:var(--surface);border-block:1px solid var(--line)}
+.sub{color:var(--muted);max-width:38em;margin-bottom:36px}
+.grid{display:grid;gap:0;grid-template-columns:repeat(4,1fr);border-top:3px solid var(--ink)}
+.grid>div{padding:22px 22px 8px 0}
+.grid p{color:var(--muted);font-size:.97rem}
+.cover{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}
+.cover ul{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:10px}
+.cover li{padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}
+.cover li span{color:var(--muted)}
+.map{width:100%;height:auto;background:var(--deep);border-radius:10px}
+.quote{display:grid;grid-template-columns:.8fr 1.2fr;gap:44px}
+form.q{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+form.q label{display:grid;gap:6px;font-weight:600;font-size:.92rem}
+form.q .full{grid-column:1/-1}
+form.q input,form.q select,form.q textarea{font:inherit;padding:12px;border-radius:6px;border:2px solid var(--line);background:var(--surface);color:var(--ink);width:100%}
+#ok{grid-column:1/-1;padding:14px;border-radius:6px;background:var(--deep);color:var(--on-deep);display:none}
+footer{background:var(--deep);color:var(--on-deep);padding:44px 0;font-size:.95rem}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+footer p{color:#9DB6BD}
+@media(max-width:860px){.hero,.cover,.quote{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}nav{display:none}form.q{grid-template-columns:1fr}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.bar b{transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+<a class="logo" href="#topo"><i></i>Bramarlog</a>
+<nav><a href="#servicos">Serviços</a><a href="#cobertura">Cobertura</a><a href="#cotacao">Cotação</a></nav>
+<a class="btn" href="#cotacao">Pedir cotação</a>
+</div></header>
+
+<main id="topo">
+<div class="wrap hero">
+<div>
+<h1>Sua carga chega no prazo combinado.</h1>
+<p class="lead">A Bramarlog transporta, armazena e distribui para empresas em todo o Brasil, com rastreio em cada etapa e um responsável que atende você pelo nome.</p>
+<div class="cta"><a class="btn" href="#cotacao">Pedir cotação</a><a class="btn ghost" href="#servicos">Ver serviços</a></div>
+</div>
+<div class="track" aria-live="polite">
+<h2>Rastreie sua carga</h2>
+<small>Digite o código da nota ou do conhecimento de transporte.</small>
+<form id="tf"><input id="code" aria-label="Código de rastreio" placeholder="Ex.: BRM-204518" autocomplete="off"><button class="btn" type="submit">Rastrear</button></form>
+<button class="eg" id="eg" type="button">Usar código de exemplo</button>
+<div id="result"></div>
+</div>
+</div>
+
+<section id="servicos" class="alt"><div class="wrap">
+<h2>O que a Bramarlog faz pela sua operação</h2>
+<p class="sub">Contratos sob medida para indústria, atacado e e-commerce, do primeiro pallet à última entrega.</p>
+<div class="grid">
+<div><h3>Transporte rodoviário</h3><p>Carga fracionada e lotação completa entre capitais e interior, com frota própria e agregados homologados.</p></div>
+<div><h3>Cabotagem e marítimo</h3><p>Rotas pela costa brasileira para volumes grandes, com menor custo por tonelada e agenda fixa de saídas.</p></div>
+<div><h3>Armazenagem e CD</h3><p>Recebimento, estoque, separação e expedição em centros de distribuição com controle por código de barras.</p></div>
+<div><h3>Última milha</h3><p>Entrega urbana com janela de horário, comprovante digital e aviso ao destinatário por mensagem.</p></div>
+</div>
+</div></section>
+
+<section id="cobertura"><div class="wrap cover">
+<div>
+<h2>Cobertura nacional, prazos claros</h2>
+<p class="sub" style="margin-bottom:0">Prazos médios em dias úteis para carga fracionada, saindo do centro-oeste.</p>
+<ul>
+<li>Goiânia – São Paulo <span>2 dias</span></li>
+<li>Goiânia – Belo Horizonte <span>2 dias</span></li>
+<li>Goiânia – Rio de Janeiro <span>3 dias</span></li>
+<li>Goiânia – Salvador <span>5 dias</span></li>
+<li>Goiânia – Porto Alegre <span>5 dias</span></li>
+</ul>
+</div>
+<svg class="map" viewBox="0 0 400 320" role="img" aria-label="Rotas a partir de Goiânia">
+<g stroke="#E8590C" stroke-width="2" fill="none" stroke-dasharray="5 5" opacity=".9">
+<path d="M190 150 L230 205"/><path d="M190 150 L255 178"/><path d="M190 150 L270 195"/><path d="M190 150 L300 120"/><path d="M190 150 L215 262"/><path d="M190 150 L150 50"/></g>
+<g fill="#EAF3F5"><circle cx="230" cy="205" r="6"/><circle cx="255" cy="178" r="6"/><circle cx="270" cy="195" r="6"/><circle cx="300" cy="120" r="6"/><circle cx="215" cy="262" r="6"/><circle cx="150" cy="50" r="6"/></g>
+<circle cx="190" cy="150" r="11" fill="#E8590C"/>
+<g fill="#EAF3F5" font-size="12" font-family="Archivo,Arial,sans-serif"><text x="168" y="178">Goiânia</text><text x="238" y="224">São Paulo</text><text x="262" y="168">B. Horizonte</text><text x="278" y="202">Rio</text><text x="308" y="116">Salvador</text><text x="224" y="276">Porto Alegre</text><text x="160" y="44">Manaus</text></g>
+</svg>
+</div></section>
+
+<section id="cotacao" class="alt"><div class="wrap quote">
+<div><h2>Peça sua cotação</h2><p class="sub">Responderemos em até 1 dia útil, com valor, prazo e condições de coleta.</p></div>
+<form class="q" id="qf">
+<label>Empresa<input required name="e"></label>
+<label>E-mail<input required type="email" name="m"></label>
+<label>Origem<input required name="o" placeholder="Cidade/UF"></label>
+<label>Destino<input required name="d" placeholder="Cidade/UF"></label>
+<label>Tipo de serviço<select name="s"><option>Transporte rodoviário</option><option>Cabotagem e marítimo</option><option>Armazenagem e CD</option><option>Última milha</option></select></label>
+<label>Peso aproximado (kg)<input type="number" min="1" name="p"></label>
+<label class="full">Detalhes da carga<textarea rows="3" name="t"></textarea></label>
+<div class="full"><button class="btn" type="submit">Enviar pedido de cotação</button></div>
+<div id="ok" role="status"></div>
+</form>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+<div><a class="logo" href="#topo" style="color:inherit"><i></i>Bramarlog</a><p style="margin-top:8px">Logística integrada para o Brasil.</p></div>
+<div><p>contato@bramarlog.com.br</p><p>(62) 0000-0000</p><p>Aparecida de Goiânia – GO</p></div>
+<p>© 2026 Bramarlog. Todos os direitos reservados.</p>
+</div></footer>
+
+<script>
+(function(){
+var S=["Coleta realizada","Triagem no centro de distribuição","Em transporte","Chegada à unidade de destino","Entregue"];
+var D={"BRM-204518":{o:"Goiânia",d:"São Paulo",n:3,eta:"2 dias úteis"},"BRM-118203":{o:"Goiânia",d:"Salvador",n:2,eta:"4 dias úteis"},"BRM-775021":{o:"Anápolis",d:"Rio de Janeiro",n:5,eta:"Entregue"}};
+var r=document.getElementById("result"),c=document.getElementById("code");
+function show(v){
+v=v.trim().toUpperCase();
+if(!v){r.innerHTML='<p class="err">Digite um código para rastrear.</p>';return}
+var x=D[v];
+if(!x){r.innerHTML='<p class="err">Não encontramos o código “'+v.replace(/[<>&"]/g,"")+'”. Confira o número na nota fiscal ou use o código de exemplo.</p>';return}
+var h='<div class="route"><span>'+x.o+'</span><span>'+x.d+'</span></div><div class="bar"><b></b></div><ul class="steps">';
+S.forEach(function(s,i){h+='<li'+(i<x.n?' class="done"':'')+'>'+s+'</li>'});
+h+='</ul><p style="margin-top:12px;font-size:.9rem;color:#9DB6BD">Previsão: '+x.eta+'</p>';
+r.innerHTML=h;
+var b=r.querySelector(".bar b");
+requestAnimationFrame(function(){requestAnimationFrame(function(){b.style.width=((x.n-1)/(S.length-1)*100)+"%"})});
+}
+document.getElementById("tf").addEventListener("submit",function(e){e.preventDefault();show(c.value)});
+document.getElementById("eg").addEventListener("click",function(){c.value="BRM-204518";show(c.value)});
+document.getElementById("qf").addEventListener("submit",function(e){
+e.preventDefault();
+var ok=document.getElementById("ok");
+ok.style.display="block";
+ok.textContent="Pedido recebido. Nossa equipe comercial responde em até 1 dia útil.";
+this.reset();
+});
+})();
+</script>
+</body>
+</html>
